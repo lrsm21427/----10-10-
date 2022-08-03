@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html>
+ 
+	<head>
+		<meta charset="UTF-8">
+		<title>华容道(10×10)</title>
+		<link rel="stylesheet" href="2.css">
+		<link rel="stylesheet" href="main.js">
+		<script type="text/javascript">
+			window.onload = function() {
+				var numArray = new Array(100);
+				var divObjArray = new Array(100);
+				for(var i = 0; i < divObjArray.length; i++) {
+					numArray[i] = i + 1;
+					divObjArray[i] = document.getElementById("index_" + i);
+				}
+				var startButton = document.getElementById("startButton");
+				var timer;
+				var curTime = 0;
+				var timeText = document.getElementById("outputTime");
+				var promptText = document.getElementById("promptText");
+ 
+				startButton.onclick = function() {
+					if(startButton.innerHTML == "游戏中...") {
+						return;
+					}
+ 
+					// 更改按钮显示字样，更改按钮颜色
+					startButton.innerHTML = "游戏中...";
+					startButton.style.backgroundColor = "";
+ 
+					// 随机分布数字所在位置
+					numArray.sort(function() {
+						return Math.random() > 0.5 ? -1 : 1;
+					});
+					for(var i = 0; i < divObjArray.length; i++) {
+						if(numArray[i] == 100) {
+							divObjArray[i].innerHTML = "";
+							divObjArray[i].style.backgroundColor = "";
+							continue;
+						}
+						divObjArray[i].innerHTML = numArray[i];
+						divObjArray[i].style.backgroundColor = "";
+					}
+ 
+					// 定时器开始计时
+					setTimeout(timing, 1000);
+ 
+					// 同步显示时间文本
+					curTime = 0;
+					timeText.value = curTime;
+ 
+				}
+ 
+				// 计时器
+				function timing() {
+					curTime++;
+					timeText.value = curTime;
+					timer = setTimeout(timing, 1000);
+				}
+				var emptyIndex = 99;
+ 
+				// 获取空白格所在下标
+				function updateEmptyFun() {
+					emptyIndex = numArray.indexOf(100);
+				}
+				function updatePositionFun(divIndex) {
+					if(startButton.innerHTML == "开始游戏") {
+						return;
+					}
+					numArray[emptyIndex] = divObjArray[divIndex].innerHTML;
+					numArray[divIndex] = 100;
+					divObjArray[emptyIndex].innerHTML = divObjArray[divIndex].innerHTML;
+					divObjArray[emptyIndex].style.backgroundColor = "";
+					divObjArray[divIndex].innerHTML = "";
+					divObjArray[divIndex].style.backgroundColor = "";
+					if(divIndex == 100) {
+						isGameOver();
+					}
+				}
+ 
+				// 判断游戏是否通关
+				function isGameOver() {
+					for(var i = 0; i < numArray.length; i++) {
+						if(numArray[i] != i + 1) {
+							return;
+						}
+					}
+					// 游戏通关，弹框告知玩家游戏顺利通关，以及所用时间
+					alert("通关啦！ 用时：" + timeText.value + "s");
+					// 将“开始游戏”按钮复位
+					startButton.innerHTML = "开始游戏";
+					// startButton.style.backgroundColor = "#97CBFF";
+					// 将计时器复位
+					clearTimeout(timer);
+					// 将顶部的“目标图案”字样设置为显示
+					promptText.style.display = "block";
+				}
+				divObjArray[0].onclick = function() {
+					updateEmptyFun();
+					if(emptyIndex == 1 || emptyIndex == 10) {
+						updatePositionFun(0);
+					}
+				}
+				divObjArray[9].onclick = function() {
+					updateEmptyFun();
+					if(emptyIndex == 8 || emptyIndex ==19) {
+						updatePositionFun(9);
+					}
+				}
+				divObjArray[90].onclick = function() {
+					updateEmptyFun();
+					if(emptyIndex == 80 || emptyIndex == 91) {
+						updatePositionFun(90);
+					}
+				}
+				divObjArray[99].onclick = function() {
+					updateEmptyFun();
+					if(emptyIndex == 29 || emptyIndex == 34) {
+						updatePositionFun(99);
+					}
+				}
+				function resFun() {
+					var curIndex;
+					for(var i = 1; i < divObjArray.length; i++) {
+						if(i >= 1 && i <= 8) {
+							divObjArray[i].onclick = function() {
+								updateEmptyFun();
+								curIndex = divObjArray.indexOf(this);
+								if(emptyIndex == curIndex - 1 || emptyIndex == curIndex + 1 || emptyIndex == curIndex + 6) {
+									updatePositionFun(curIndex);
+								}
+							}
+							continue;
+						}
+						if(i >= 91 && i <= 98) {
+							divObjArray[i].onclick = function() {
+								updateEmptyFun();
+								curIndex = divObjArray.indexOf(this);
+								if(emptyIndex == curIndex - 1 || emptyIndex == curIndex + 1 || emptyIndex == curIndex - 6) {
+									updatePositionFun(curIndex);
+								}
+							}
+							continue;
+						}
+						if(i == 10 || i == 20 || i == 30 || i == 60 || i == 50 || i == 70 || i == 80 ) {
+							divObjArray[i].onclick = function() {
+								updateEmptyFun();
+								curIndex = divObjArray.indexOf(this);
+								if(emptyIndex == curIndex - 10 || emptyIndex == curIndex + 10 || emptyIndex == curIndex + 1) {
+									updatePositionFun(curIndex);
+								}
+							}
+							continue;
+						}
+						if(i == 19 || i == 29 || i == 39 || i == 69 || i == 59 || i == 79 || i == 89) {
+							divObjArray[i].onclick = function() {
+								updateEmptyFun();
+								curIndex = divObjArray.indexOf(this);
+								if(emptyIndex == curIndex - 10 || emptyIndex == curIndex + 10 || emptyIndex == curIndex - 1) {
+									updatePositionFun(curIndex);
+								}
+							}
+							continue;
+						}
+						divObjArray[i].onclick = function() {
+							updateEmptyFun();
+							curIndex = divObjArray.indexOf(this);
+							if(emptyIndex == curIndex - 10 || emptyIndex == curIndex + 10 || emptyIndex == curIndex - 1 || emptyIndex == curIndex + 1) {
+								updatePositionFun(curIndex);
+							}
+						}
+ 
+					}
+				}
+				resFun();
+ 
+			}
+		</script>
+	</head>
+ 
+	<body >
+		<div style="height: 100%;width: 100%;text-align: center;margin:auto;">
+			<div style="margin-left: 33.5%;margin-top: 0;">
+				<div class="container" >
+					<!-- 时钟 -->
+					<ul class="flip hours-left">
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+						</li>
+					</ul>
+					<ul class="flip hours-right">
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">6</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">6</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">7</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">7</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">8</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">8</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">9</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">9</div>
+							</div>
+						</li>
+					</ul>
+			
+					<div class="division">
+			
+					</div>
+			
+					<!-- 分钟 -->
+					<ul class="flip minutes-left">
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+						</li>
+					</ul>
+					<ul class="flip minutes-right">
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">6</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">6</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">7</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">7</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">8</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">8</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">9</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">9</div>
+							</div>
+						</li>
+					</ul>
+			
+					<div class="division">
+			
+					</div>
+			
+					<!-- 秒钟 -->
+					<ul class="flip seconds-left">
+						<li class="">
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">0</div>
+							</div>
+						</li>
+						<li class="">
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">1</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">2</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">3</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">4</div>
+							</div>
+						</li>
+						<li>
+							<div class="up">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+							<div class="down">
+								<div class="shadow"></div>
+								<div class="inn">5</div>
+							</div>
+						</li>
+					</ul>
+					<ul class="flip seconds-right">
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">0</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">0</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">1</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">1</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">2</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">2</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">3</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">3</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">4</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">4</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">5</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">5</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">6</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">6</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">7</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">7</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">8</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">8</div>
+						</div>
+					</li>
+					<li>
+						<div class="up">
+							<div class="shadow"></div>
+							<div class="inn">9</div>
+						</div>
+						<div class="down">
+							<div class="shadow"></div>
+							<div class="inn">9</div>
+						</div>
+					</li>
+					</ul>
+			
+				</div>
+			</div>
+			<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+			<script src="./main.js"></script>
+			<div class="div1" style="text-align: center;margin:auto;margin-top: 10%;">
+				<div class="div2" id="index_0">1</div>
+				<div class="div2" id="index_1">2</div>
+				<div class="div2" id="index_2">3</div>
+				<div class="div2" id="index_3">4</div>
+				<div class="div2" id="index_4">5</div>
+				<div class="div2" id="index_5">6</div>
+				<div class="div2" id="index_6">7</div>
+				<div class="div2" id="index_7">8</div>
+				<div class="div2" id="index_8">9</div>
+				<div class="div2" id="index_9">10</div>
+				<div class="div2" id="index_10">11</div>
+				<div class="div2" id="index_11">12</div>
+				<div class="div2" id="index_12">13</div>
+				<div class="div2" id="index_13">14</div>
+				<div class="div2" id="index_14">15</div>
+				<div class="div2" id="index_15">16</div>
+				<div class="div2" id="index_16">17</div>
+				<div class="div2" id="index_17">18</div>
+				<div class="div2" id="index_18">19</div>
+				<div class="div2" id="index_19">20</div>
+				<div class="div2" id="index_20">21</div>
+				<div class="div2" id="index_21">22</div>
+				<div class="div2" id="index_22">23</div>
+				<div class="div2" id="index_23">24</div>
+				<div class="div2" id="index_24">25</div>
+				<div class="div2" id="index_25">26</div>
+				<div class="div2" id="index_26">27</div>
+				<div class="div2" id="index_27">28</div>
+				<div class="div2" id="index_28">29</div>
+				<div class="div2" id="index_29">30</div>
+				<div class="div2" id="index_30">31</div>
+				<div class="div2" id="index_31">32</div>
+				<div class="div2" id="index_32">33</div>
+				<div class="div2" id="index_33">34</div>
+				<div class="div2" id="index_34">35</div>
+                <div class="div2" id="index_35">36</div>
+                <div class="div2" id="index_36">37</div>
+                <div class="div2" id="index_37">38</div>
+                <div class="div2" id="index_38">39</div>
+                <div class="div2" id="index_39">40</div>
+                <div class="div2" id="index_40">41</div>
+                <div class="div2" id="index_41">42</div>
+                <div class="div2" id="index_42">43</div>
+                <div class="div2" id="index_43">44</div>
+                <div class="div2" id="index_44">45</div>
+                <div class="div2" id="index_45">46</div>
+                <div class="div2" id="index_46">47</div>
+                <div class="div2" id="index_47">48</div>
+                <div class="div2" id="index_48">49</div>
+                <div class="div2" id="index_49">50</div>
+                <div class="div2" id="index_50">51</div>
+                <div class="div2" id="index_51">52</div>
+                <div class="div2" id="index_52">53</div>
+                <div class="div2" id="index_53">54</div>
+                <div class="div2" id="index_54">55</div>
+                <div class="div2" id="index_55">56</div>
+                <div class="div2" id="index_56">57</div>
+                <div class="div2" id="index_57">58</div>
+                <div class="div2" id="index_58">59</div>
+                <div class="div2" id="index_59">60</div>
+                <div class="div2" id="index_60">61</div>
+                <div class="div2" id="index_61">62</div>
+                <div class="div2" id="index_62">63</div>
+                <div class="div2" id="index_63">64</div>
+                <div class="div2" id="index_64">65</div>
+                <div class="div2" id="index_65">66</div>
+                <div class="div2" id="index_66">67</div>
+                <div class="div2" id="index_67">68</div>
+                <div class="div2" id="index_68">68</div>
+                <div class="div2" id="index_69">70</div>
+                <div class="div2" id="index_70">71</div>
+                <div class="div2" id="index_71">72</div>
+                <div class="div2" id="index_72">73</div>
+                <div class="div2" id="index_73">74</div>
+                <div class="div2" id="index_74">75</div>
+                <div class="div2" id="index_75">76</div>
+                <div class="div2" id="index_76">77</div>
+                <div class="div2" id="index_77">78</div>
+                <div class="div2" id="index_78">79</div>
+                <div class="div2" id="index_79">80</div>
+                <div class="div2" id="index_80">81</div>
+                <div class="div2" id="index_81">82</div>
+                <div class="div2" id="index_82">83</div>
+                <div class="div2" id="index_83">84</div>
+                <div class="div2" id="index_84">85</div>
+                <div class="div2" id="index_85">86</div>
+                <div class="div2" id="index_86">87</div>
+                <div class="div2" id="index_87">88</div>
+                <div class="div2" id="index_88">89</div>
+                <div class="div2" id="index_89">90</div>
+                <div class="div2" id="index_90">91</div>
+                <div class="div2" id="index_91">92</div>
+                <div class="div2" id="index_92">93</div>
+                <div class="div2" id="index_93">94</div>
+                <div class="div2" id="index_94">95</div>
+                <div class="div2" id="index_95">96</div>
+                <div class="div2" id="index_96">97</div>
+                <div class="div2" id="index_97">98</div>
+                <div class="div2" id="index_98">99</div>
+				<div class="div2"  id="index_99"></div>
+				<!-- <div class="div2" style="background-color: #6C6C6C;" id="index_35"></div> -->
+			</div>
+			<div class="div3" style="text-align: center;margin:auto;margin-top: 3%;">
+				<button class="buttonStyle" id="startButton" name="button" value="StartButton">开始</button>
+				<!-- <span class="timeText">时间</span> -->
+				<!-- <input class="inputStyle" type="text" name="outputTime" id="outputTime" value="" readonly="readonly" /> -->
+				<!-- <span class="timeText" style="margin-left: 0px;">s</span> -->
+				<!--  -->
+			</div>
+		</div>
+	</body>
+ 
+</html>
